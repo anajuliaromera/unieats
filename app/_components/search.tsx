@@ -1,8 +1,9 @@
+
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "./ui/button"; 
+import { Input } from "./ui/input";  
 import React, { FormEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -21,11 +22,17 @@ export default function Search() {
   };
 
   return (
-    <form className="flex gap-4 text-black" onSubmit={handleSearchSubmit}>
+    <form
+      className="flex gap-4 text-black"
+      onSubmit={handleSearchSubmit}
+      aria-label="Formulário de busca de restaurantes" 
+    >
       <Input
         placeholder="Buscar restaurantes"
         className="border-none"
         onChange={handleChange}
+        value={search} 
+       
       />
       <Button size={"icon"} type="submit">
         <SearchIcon size={18} />

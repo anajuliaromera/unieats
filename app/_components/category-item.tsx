@@ -1,7 +1,8 @@
+// app/_components/category-item.tsx (ou onde estiver o seu arquivo)
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "./ui/button"; // Certifique-se que o caminho para ./ui/button está correto
 
 interface CategoryItemProps {
   category: Category;
@@ -13,6 +14,7 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
       <Link
         href={`/categories/${category.id}/products`}
         className="flex items-center justify-center gap-3 rounded-full px-4 py-6 shadow-md hover:text-white"
+        data-testid={`category-link-${category.id}`} // <--- ADICIONE ESTA LINHA
       >
         <Image
           src={category.imageUrl}

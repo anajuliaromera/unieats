@@ -9,6 +9,12 @@ COPY tsconfig.json ./
 COPY next.config.mjs ./
 COPY . .
 
+# Adicione este ARG para a DATABASE_URL
+ARG DATABASE_URL
+
+# Defina a variável de ambiente DATABASE_URL para que o build possa usá-la
+ENV DATABASE_URL=${DATABASE_URL}
+
 RUN npm install
 RUN npm run build
 
@@ -26,8 +32,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 
-# Copie o .env em tempo de build ou monte como volume/env em produção
-#COPY .env .env
+# Remova ou comente esta linha se você vai passar a DATABASE_URL em tempo de execução
+# COPY .env .env
 
 EXPOSE 3000
 

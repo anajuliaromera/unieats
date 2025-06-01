@@ -3,57 +3,116 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 96%;
-  --foreground: 0 0% 20%;
-  --card: 356 50% 100%;
-  --card-foreground: 356 5% 15%;
-  --popover: 356 100% 100%;
-  --popover-foreground: 356 100% 10%;
-  --primary: 356 83% 51.6%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 356 30% 90%;
-  --secondary-foreground: 0 0% 0%;
-  --muted: 318 30% 95%;
-  --muted-foreground: 225 8% 53%;
-  --accent: 318 30% 90%;
-  --accent-foreground: 356 5% 15%;
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 356 5% 100%;
-  --border: 356 30% 82%;
-  --input: 356 30% 50%;
-  --ring: 356 83% 51.6%;
-  --radius: 0.75rem;
+  /* Paleta UniEats - Modo Claro */
+  --background: 43 44% 94%;     /* UniBeigeBG: #F5F1E8 */
+  --foreground: 27 15% 25%;     /* UniTextDark: #4A3F35 */
+
+  --card: 0 0% 100%;            /* Card Branco: #FFFFFF (sobre fundo bege) */
+  --card-foreground: 27 15% 25%; /* UniTextDark: #4A3F35 (para texto no card) */
+
+  --popover: 0 0% 100%;           /* Popover Branco: #FFFFFF */
+  --popover-foreground: 27 15% 25%; /* UniTextDark: #4A3F35 */
+
+  --primary: 15 83% 53%;         /* UniOrangePrimary: #E85A29 */
+  --primary-foreground: 0 0% 100%;/* UniTextLight: #FFFFFF (para texto no botão primário) */
+
+  --secondary: 17 100% 77%;       /* UniOrangeLight: #FFA98A */
+  --secondary-foreground: 27 15% 25%;/* UniTextDark: #4A3F35 (para contraste no laranja claro) */
+
+  --muted: 44 50% 96%;           /* UniNeutralLight: #FAF7F0 (um tom um pouco mais claro que o bege principal) */
+  --muted-foreground: 30 14% 35%; /* UniTextMedium (um pouco mais escuro): #6A5C4F */
+
+  --accent: 45 100% 64%;         /* UniAccentPlayful: #FFCB45 (Amarelo) */
+  --accent-foreground: 27 15% 25%;/* UniTextDark: #4A3F35 (para contraste no amarelo) */
+
+  --destructive: 0 70% 68%;      /* UniErrorRed: #E57373 */
+  --destructive-foreground: 0 0% 100%;/* UniTextLight: #FFFFFF */
+
+  --border: 36 25% 87%;          /* UniBorderSoft: #DCD0C0 */
+  --input: 36 25% 87%;           /* UniBorderSoft para borda do input (fundo pode ser --card ou --background) */
+  --ring: 15 83% 53%;            /* UniOrangePrimary para o anel de foco (outline) */
+
+  --radius: 0.75rem;             /* 12px. UniBorderRadiusMedium */
+  --radius-small: 0.5rem;        /* 8px, se precisar de um menor */
+  --radius-large: 1.5rem;        /* 24px, para elementos bem arredondados */
+
+
+  /* Variável de Fonte UniEats */
+  --font-family-main: "Nunito", sans-serif;
 }
 
 .dark {
-  --background: 356 50% 10%;
-  --foreground: 356 5% 100%;
-  --card: 356 50% 10%;
-  --card-foreground: 356 5% 100%;
-  --popover: 356 50% 5%;
-  --popover-foreground: 356 5% 100%;
-  --primary: 356 83% 51.6%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 356 30% 20%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 318 30% 25%;
-  --muted-foreground: 225 8% 53%;
-  --accent: 318 30% 25%;
-  --accent-foreground: 356 5% 95%;
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 356 5% 100%;
-  --border: 356 30% 50%;
-  --input: 356 30% 50%;
-  --ring: 356 83% 51.6%;
-  --radius: 0.75rem;
+  /* Paleta UniEats - Modo Escuro (Sugestão com ajuste no muted-foreground) */
+  --background: 27 12% 15%;     /* Fundo Escuro Quente: #2C2521 */
+  --foreground: 43 44% 94%;     /* Texto Principal Claro (UniBeigeBG): #F5F1E8 */
+
+  --card: 27 11% 20%;            /* Card Escuro (um pouco mais claro que o fundo): #382F2A */
+  --card-foreground: 43 44% 94%; /* Texto no Card (UniBeigeBG): #F5F1E8 */
+
+  --popover: 27 10% 17%;          /* Popover ainda mais escuro: #302824 */
+  --popover-foreground: 43 44% 94%;/* Texto no Popover (UniBeigeBG): #F5F1E8 */
+
+  --primary: 15 83% 53%;         /* UniOrangePrimary: #E85A29 (mantém-se vibrante) */
+  --primary-foreground: 0 0% 100%;/* UniTextLight: #FFFFFF */
+
+  --secondary: 17 80% 65%;       /* UniOrangeLight (um pouco menos saturado/claro para dark mode): #F88A6A */
+  --secondary-foreground: 27 12% 15%;/* Fundo Escuro Quente: #2C2521 (para contraste no laranja claro) */
+
+  --muted: 27 8% 25%;            /* Muted Escuro: #453E3A */
+  --muted-foreground: 30 9% 65%;  /* Muted Foreground Claro (um pouco mais claro): #AFA69B */
+
+  --accent: 45 100% 64%;         /* UniAccentPlayful: #FFCB45 (mantém-se vibrante) */
+  --accent-foreground: 27 12% 15%;/* Fundo Escuro Quente: #2C2521 (para contraste no amarelo) */
+
+  --destructive: 0 70% 68%;      /* UniErrorRed: #E57373 (pode precisar de ajuste para dark) */
+  --destructive-foreground: 0 0% 100%;/* UniTextLight: #FFFFFF */
+
+  --border: 27 9% 33%;           /* Borda Escura: #5D524A */
+  --input: 27 9% 33%;            /* Borda Escura para input */
+  --ring: 15 83% 53%;            /* UniOrangePrimary para o anel de foco */
 }
 
 @layer base {
   * {
-    @apply box-border;
+    @apply border-border; 
+    box-sizing: border-box; 
   }
 
   body {
-    @apply bg-[#f4f4f4] text-foreground antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-family-main); 
+    line-height: 1.7; 
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-foreground; 
+    font-family: var(--font-family-main);
+    /* Adicione margens padrão se necessário */
+    /* Ex: @apply mt-6 mb-3; */
+  }
+
+  a {
+    @apply text-[hsl(var(--primary))] hover:opacity-80;
+    font-weight: 600;
+  }
+
+  /* Melhorias de Acessibilidade para Foco */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    border-radius: var(--radius); 
+  }
+
+  /* Estilo para placeholder */
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1; /* Ou 0.8 para um pouco mais sutil */
   }
 }
+
+/* Import da fonte Nunito: 
+  Certifique-se de que a fonte Nunito está sendo importada. 
+  Se você já a importa no seu app/layout.tsx (dentro do <head>), não precisa da linha abaixo.
+  Caso contrário, descomente-a ou adicione a importação no seu layout.
+  Ex: @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap'); 
+*/

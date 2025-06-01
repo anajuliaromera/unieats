@@ -14,12 +14,20 @@ datasource db {
 }
 
 model Restaurant {
-  id                     String                   @id @default(uuid())
-  name                   String
-  imageUrl               String
-  deliveryFee            Decimal                  @db.Decimal(10, 2)
-  deliveryTimeMinutes    Int
-  rating                 Decimal                  @default(3)
+  id                   String                   @id @default(uuid())
+  name                 String
+  imageUrl             String
+  deliveryFee          Decimal                  @db.Decimal(10, 2)
+  deliveryTimeMinutes  Int
+  rating               Decimal                  @default(3) @db.Decimal(2,1) // Especificando precisão para rating também
+  
+  // CAMPOS ADICIONADOS PARA TIMESTAMPS E TIPO/ESPECIALIDADE (UniEats)
+  type                 String?                  // Para "Cantina", "Aluno Vendedor", etc. (Opcional)
+  specialty            String?                  // Especialidade do vendedor/restaurante (Opcional)
+  createdAt            DateTime                 @default(now()) // Data de criação
+  updatedAt            DateTime                 @updatedAt      // Data da última atualização
+
+  // RELAÇÕES EXISTENTES
   categories             Category[]
   Product                Product[]
   Order                  Order[]
@@ -28,10 +36,10 @@ model Restaurant {
 
 model UserFavoriteRestaurant {
   userId       String
-  user         User       @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  createAt     DateTime   @default(now())
+  createdAt    DateTime @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt' para consistência
 
   @@id([userId, restaurantId])
 }
@@ -55,7 +63,7 @@ model Product {
   restaurant         Restaurant     @relation(fields: [restaurantId], references: [id])
   categoryId         String
   category           Category       @relation(fields: [categoryId], references: [id])
-  createAt           DateTime       @default(now())
+  createdAt          DateTime       @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt'
   orderProduct       OrderProduct[]
 }
 
@@ -66,22 +74,32 @@ model OrderProduct {
   productId String
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+  // Adicionar o preço unitário do produto no momento da compra é uma boa prática
+  // priceAtOrder Decimal @db.Decimal(10, 2) 
 }
 
 model Order {
-  id             String         @id @default(uuid())
-  userId         String
-  user           User           @relation(fields: [userId], references: [id])
-  deliveryFee    Decimal        @db.Decimal(10, 2)
-  subTotalPrice  Decimal        @db.Decimal(10, 2)
-  totalPrice     Decimal        @db.Decimal(10, 2)
-  totalDiscounts Int
-  deliveryTime   Int
-  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id])
-  restaurantId   String
-  createAt       DateTime       @default(now())
-  status         OrderStatus
-  products       OrderProduct[]
+  id               String         @id @default(uuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id])
+  deliveryFee      Decimal        @db.Decimal(10, 2)
+  subTotalPrice    Decimal        @db.Decimal(10, 2)
+  totalPrice       Decimal        @db.Decimal(10, 2)
+  totalDiscounts   Decimal        @db.Decimal(10,2) @default(0) // Alterado para Decimal e com default
+  deliveryTime     Int // Manteve como Int, refere-se a minutos
+  restaurant       Restaurant     @relation(fields: [restaurantId], references: [id])
+  restaurantId     String
+  createdAt        DateTime       @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt'
+  status           OrderStatus
+  products         OrderProduct[]
+
+  // Campos de endereço de entrega (exemplo, adicione conforme sua necessidade)
+  deliveryAddressStreet     String?
+  deliveryAddressNumber     String?
+  deliveryAddressComplement String?
+  deliveryAddressZipCode    String?
+  deliveryAddressCity       String?
+  deliveryAddressState      String?
 }
 
 enum OrderStatus {
@@ -90,7 +108,11 @@ enum OrderStatus {
   DELIVERING
   COMPLETED
   CANCELED
+  PENDING // Adicionado status PENDENTE que usei nos exemplos
 }
+
+// Modelos Account, Session, User, VerificationToken permanecem os mesmos
+// (A menos que você queira adicionar timestamps a User também, o que é comum)
 
 model Account {
   id                String  @id @default(cuid())
@@ -123,15 +145,18 @@ model Session {
 }
 
 model User {
-  id                     String                   @id @default(cuid())
-  name                   String?
-  email                  String?                  @unique
-  emailVerified          DateTime?                @map("email_verified")
-  image                  String?
-  accounts               Account[]
-  sessions               Session[]
-  Order                  Order[]
+  id                   String                   @id @default(cuid())
+  name                 String?
+  email                String?                  @unique
+  emailVerified        DateTime?                @map("email_verified")
+  image                String?
+  accounts             Account[]
+  sessions             Session[]
+  Order                Order[]
   userFavoriteRestaurant UserFavoriteRestaurant[]
+  // Opcional: Adicionar timestamps a User
+  // createdAt            DateTime                 @default(now())
+  // updatedAt            DateTime                 @updatedAt
 
   @@map("users")
 }

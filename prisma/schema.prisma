@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,32 +8,24 @@ datasource db {
 }
 
 model Restaurant {
-  id                   String                   @id @default(uuid())
-  name                 String
-  imageUrl             String
-  deliveryFee          Decimal                  @db.Decimal(10, 2)
-  deliveryTimeMinutes  Int
-  rating               Decimal                  @default(3) @db.Decimal(2,1) // Especificando precisão para rating também
-  
-  // CAMPOS ADICIONADOS PARA TIMESTAMPS E TIPO/ESPECIALIDADE (UniEats)
-  type                 String?                  // Para "Cantina", "Aluno Vendedor", etc. (Opcional)
-  specialty            String?                  // Especialidade do vendedor/restaurante (Opcional)
-  createdAt            DateTime                 @default(now()) // Data de criação
-  updatedAt            DateTime                 @updatedAt      // Data da última atualização
-
-  // RELAÇÕES EXISTENTES
-  categories             Category[]
-  Product                Product[]
+  id                     String                   @id @default(uuid())
+  name                   String
+  imageUrl               String
+  deliveryFee            Decimal                  @db.Decimal(10, 2)
+  deliveryTimeMinutes    Int
+  rating                 Decimal                  @default(3)
   Order                  Order[]
+  Product                Product[]
   userFavoriteRestaurant UserFavoriteRestaurant[]
+  categories             Category[]               @relation("CategoryToRestaurant")
 }
 
 model UserFavoriteRestaurant {
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
   restaurantId String
+  createAt     DateTime   @default(now())
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  createdAt    DateTime @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt' para consistência
+  user         User       @relation(fields: [userId], references: [id])
 
   @@id([userId, restaurantId])
 }
@@ -48,8 +34,8 @@ model Category {
   id          String       @id @default(uuid())
   name        String
   imageUrl    String
-  restaurants Restaurant[]
   Product     Product[]
+  restaurants Restaurant[] @relation("CategoryToRestaurant")
 }
 
 model Product {
@@ -60,59 +46,37 @@ model Product {
   price              Decimal        @db.Decimal(10, 2)
   discountPercentage Int            @default(0)
   restaurantId       String
-  restaurant         Restaurant     @relation(fields: [restaurantId], references: [id])
   categoryId         String
-  category           Category       @relation(fields: [categoryId], references: [id])
-  createdAt          DateTime       @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt'
+  createAt           DateTime       @default(now())
   orderProduct       OrderProduct[]
+  category           Category       @relation(fields: [categoryId], references: [id])
+  restaurant         Restaurant     @relation(fields: [restaurantId], references: [id])
 }
 
 model OrderProduct {
   id        String  @id @default(uuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
   productId String
-  product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  // Adicionar o preço unitário do produto no momento da compra é uma boa prática
-  // priceAtOrder Decimal @db.Decimal(10, 2) 
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Order {
-  id               String         @id @default(uuid())
-  userId           String
-  user             User           @relation(fields: [userId], references: [id])
-  deliveryFee      Decimal        @db.Decimal(10, 2)
-  subTotalPrice    Decimal        @db.Decimal(10, 2)
-  totalPrice       Decimal        @db.Decimal(10, 2)
-  totalDiscounts   Decimal        @db.Decimal(10,2) @default(0) // Alterado para Decimal e com default
-  deliveryTime     Int // Manteve como Int, refere-se a minutos
-  restaurant       Restaurant     @relation(fields: [restaurantId], references: [id])
-  restaurantId     String
-  createdAt        DateTime       @default(now()) // 'createdAt' aqui estava escrito com 'A' maiúsculo, corrigido para 'createdAt'
-  status           OrderStatus
-  products         OrderProduct[]
-
-  // Campos de endereço de entrega (exemplo, adicione conforme sua necessidade)
-  deliveryAddressStreet     String?
-  deliveryAddressNumber     String?
-  deliveryAddressComplement String?
-  deliveryAddressZipCode    String?
-  deliveryAddressCity       String?
-  deliveryAddressState      String?
+  id             String         @id @default(uuid())
+  userId         String
+  deliveryFee    Decimal        @db.Decimal(10, 2)
+  subTotalPrice  Decimal        @db.Decimal(10, 2)
+  totalPrice     Decimal        @db.Decimal(10, 2)
+  totalDiscounts Int
+  deliveryTime   Int
+  restaurantId   String
+  createAt       DateTime       @default(now())
+  status         OrderStatus
+  restaurant     Restaurant     @relation(fields: [restaurantId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
+  products       OrderProduct[]
 }
-
-enum OrderStatus {
-  CONFIRMED
-  PREPARING
-  DELIVERING
-  COMPLETED
-  CANCELED
-  PENDING // Adicionado status PENDENTE que usei nos exemplos
-}
-
-// Modelos Account, Session, User, VerificationToken permanecem os mesmos
-// (A menos que você queira adicionar timestamps a User também, o que é comum)
 
 model Account {
   id                String  @id @default(cuid())
@@ -120,15 +84,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -145,18 +108,15 @@ model Session {
 }
 
 model User {
-  id                   String                   @id @default(cuid())
-  name                 String?
-  email                String?                  @unique
-  emailVerified        DateTime?                @map("email_verified")
-  image                String?
-  accounts             Account[]
-  sessions             Session[]
-  Order                Order[]
+  id                     String                   @id @default(cuid())
+  name                   String?
+  email                  String?                  @unique
+  emailVerified          DateTime?                @map("email_verified")
+  image                  String?
+  Order                  Order[]
   userFavoriteRestaurant UserFavoriteRestaurant[]
-  // Opcional: Adicionar timestamps a User
-  // createdAt            DateTime                 @default(now())
-  // updatedAt            DateTime                 @updatedAt
+  accounts               Account[]
+  sessions               Session[]
 
   @@map("users")
 }
@@ -168,4 +128,12 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+
+enum OrderStatus {
+  CONFIRMED
+  PREPARING
+  DELIVERING
+  COMPLETED
+  CANCELED
 }

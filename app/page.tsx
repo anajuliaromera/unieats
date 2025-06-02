@@ -97,14 +97,13 @@ export default async function Home() {
         </div>
 
         <div className="mt-10 hidden items-center justify-center md:mt-0 md:flex md:max-w-[40%] lg:max-w-[45%]">
-          <div className="relative aspect-square w-full max-w-md drop-shadow-[0_15px_20px_rgba(74,63,53,0.25)] 2xl:max-w-lg">
+          <div className="mt-10 flex w-full items-center justify-end pr-8">
             <Image
-              src={"/cupnoodles.png"}
-              fill
+              src="/cupnoodles.png"
               alt="Lanche UniEats"
-              className="object-contain"
-              sizes="(max-width: 768px) 80vw, 40vw"
-              priority
+              width={500} // ou a largura que fizer sentido para o seu layout
+              height={300} // ajuste a altura proporcionalmente
+              className="h-auto w-full max-w-[500px] object-contain drop-shadow-[0_15px_20px_rgba(74,63,53,0.25)]"
             />
           </div>
         </div>
@@ -121,7 +120,7 @@ export default async function Home() {
 
         <section aria-labelledby="promo-and-recommended-title">
           <h2 id="promo-and-recommended-title" className="sr-only">
-            Promoções e Pedidos Recomendados
+            Promoções
           </h2>
           <div className="grid grid-cols-1 items-start gap-6 md:gap-8 lg:grid-cols-3">
             <div className="space-y-6 lg:col-span-1 lg:space-y-8">
@@ -136,7 +135,7 @@ export default async function Home() {
             <div className="space-y-4 lg:col-span-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-[hsl(var(--foreground))] md:text-2xl">
-                  Pedidos Recomendados 🍕
+                  Pedidos Recomendados
                 </h3>
                 <Button
                   asChild
@@ -162,7 +161,7 @@ export default async function Home() {
               id="featured-sellers-title"
               className="text-xl font-bold text-[hsl(var(--foreground))] md:text-2xl"
             >
-              Vendedores em Destaque ✨ {/* Título para vendedores */}
+              Vendedores {/* Título para vendedores */}
             </h2>
             <Button
               asChild

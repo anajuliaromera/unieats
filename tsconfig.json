@@ -25,7 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@components/*": ["app/_components/*"]
+      "@/components/*": ["./app/_components/*"] // <--- CORRIGIDO
     }
   },
   "include": [

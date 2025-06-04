@@ -1,66 +1,88 @@
 // __tests__/components/CategoryList.test.tsx
-import { render, screen } from '@testing-library/react';
-import CategoryList from '../../app/_components/category-list'; // Ajuste o caminho se necessário
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import CategoryList from "../../app/_components/category-list";
+import "@testing-library/jest-dom";
 
-// 1. DEFINA mockCategoriesData PRIMEIRO
+// 1. DEFINA mockCategoriesData PRIMEIRO (Correto!)
 const mockCategoriesData = [
-  { id: '1', name: 'Pizzas Mock', imageUrl: 'url1.png', products: [] },
-  { id: '2', name: 'Lanches Mock', imageUrl: 'url2.png', products: [] },
+  { id: "1", name: "Pizzas Mock", imageUrl: "url1.png", products: [] },
+  { id: "2", name: "Lanches Mock", imageUrl: "url2.png", products: [] },
 ];
 
-// 2. Mock para o CategoryItem (corrigido para default export)
-jest.mock('../../app/_components/category-item', () => ({
-  __esModule: true, // Importante para mocks de módulos com default export
-  default: jest.fn(({ category }) => ( // Agora mockando o 'default'
+// --- Mocks ---
+
+// Mock para o CategoryItem - AJUSTADO AQUI
+jest.mock("../../app/_components/category-item", () => ({
+  __esModule: true,
+  // Definimos jest.fn() diretamente aqui para o default export
+  default: jest.fn(({ category }) => (
     <div data-testid={`mock-category-item-${category.id}`}>{category.name}</div>
   )),
 }));
 
-// 3. Mock para o módulo Prisma (db) - já estava correto em ordem
-jest.mock('../../app/_lib/prisma', () => ({
+// Mock para o módulo Prisma (db) - Mantém o ajuste anterior
+jest.mock("../../app/_lib/prisma", () => ({
   db: {
     category: {
-      findMany: jest.fn().mockResolvedValue(mockCategoriesData),
+      findMany: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockCategoriesData)),
     },
   },
 }));
 
-describe('CategoryList Component (Server Component with Prisma)', () => {
+// --- Test Suite ---
+describe("CategoryList Component (Server Component with Prisma)", () => {
+  // Referências aos mocks para uso nos testes
+  // Importante: require() é usado aqui para garantir que pegamos a versão mockada pelo Jest.
+  const MockedCategoryItem = require("../../app/_components/category-item")
+    .default as jest.Mock;
+  const { db } = require("../../app/_lib/prisma");
+  const mockedPrismaFindManyFromMock = db.category.findMany as jest.Mock;
+
   beforeEach(() => {
-    // Limpa os mocks antes de cada teste
-    (require('../../app/_lib/prisma').db.category.findMany as jest.Mock).mockClear();
-    // Limpa o mock do CategoryItem (corrigido para default export)
-    (require('../../app/_components/category-item').default as jest.Mock).mockClear();
+    mockedPrismaFindManyFromMock.mockClear();
+    MockedCategoryItem.mockClear(); // Usa a referência correta
   });
 
   it('renders a list of category items fetched from "database"', async () => {
-    // Como CategoryList é um async component, precisamos usar await ao renderizar
+    // Garante que o mock do Prisma use o mockCategoriesData padrão
+    mockedPrismaFindManyFromMock.mockImplementation(() =>
+      Promise.resolve(mockCategoriesData),
+    );
+
     const ResolvedCategoryList = await CategoryList();
     render(ResolvedCategoryList);
-    
-    expect(require('../../app/_lib/prisma').db.category.findMany).toHaveBeenCalledTimes(1);
 
-    expect(screen.getByText('Pizzas Mock')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-category-item-1')).toBeInTheDocument();
-    expect(screen.getByText('Lanches Mock')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-category-item-2')).toBeInTheDocument();
+    expect(mockedPrismaFindManyFromMock).toHaveBeenCalledTimes(1);
+
+    // Verifica se os itens (mockados) são renderizados com os dados corretos
+    expect(screen.getByText("Pizzas Mock")).toBeInTheDocument();
+    expect(screen.getByTestId("mock-category-item-1")).toBeInTheDocument();
+    expect(screen.getByText("Lanches Mock")).toBeInTheDocument();
+    expect(screen.getByTestId("mock-category-item-2")).toBeInTheDocument();
+
+    // Opcional: verificar se o CategoryItem mockado foi chamado com as props corretas
+    expect(MockedCategoryItem).toHaveBeenCalledWith(
+      expect.objectContaining({ category: mockCategoriesData[0] }),
+      expect.anything(), // O segundo argumento para componentes funcionais é o ref, que geralmente não testamos assim
+    );
+    expect(MockedCategoryItem).toHaveBeenCalledWith(
+      expect.objectContaining({ category: mockCategoriesData[1] }),
+      expect.anything(),
+    );
   });
 
-  it('renders message if no categories are fetched (or an empty array is returned)', async () => {
-    (require('../../app/_lib/prisma').db.category.findMany as jest.Mock).mockResolvedValueOnce([]);
-    
+  it("renders no category items if an empty array is returned from database", async () => {
+    mockedPrismaFindManyFromMock.mockImplementationOnce(() =>
+      Promise.resolve([]),
+    );
+
     const ResolvedCategoryList = await CategoryList();
     render(ResolvedCategoryList);
 
-    // O código atual do seu CategoryList (que você compartilhou) não tem tratamento explícito
-    // para uma lista vazia (ele apenas faria .map em um array vazio).
-    // Se você quiser testar uma mensagem específica, adicione a lógica ao componente:
-    // if (categories.length === 0) return <p>Nenhuma categoria encontrada.</p>;
-    // E então descomente a linha abaixo:
-    // expect(screen.getByText('Nenhuma categoria encontrada.')).toBeInTheDocument();
-    
-    // Por enquanto, verificamos que nenhum item de categoria mockado é renderizado:
+    expect(mockedPrismaFindManyFromMock).toHaveBeenCalledTimes(1);
     expect(screen.queryByTestId(/mock-category-item-/)).not.toBeInTheDocument();
   });
 });

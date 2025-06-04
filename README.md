@@ -151,3 +151,157 @@ No `package.json`, você encontrará os seguintes scripts principais:
 * `npm run prepare`: Executa `husky && prisma generate` (geralmente após a instalação de pacotes).
 
 ---
+
+# UniEats 🍔🍕🥗
+
+Welcome to UniEats! A food delivery platform designed to connect food vendors (canteens, student sellers, fraternities/sororities, food bikes) with the university community.
+
+## 🌟 Key Features
+
+* **Restaurant/Vendor Listing:** Browse different types of food vendors.
+* **Product Viewing:** See the products offered by each restaurant/vendor.
+* **Search:** Easily find restaurants and products.
+* **Product Categories:** Explore products by categories.
+* **Favorites:** Mark your preferred restaurants.
+* **My Orders:** Track your orders (feature under development/to be detailed).
+* **User Authentication:** Secure login and registration system.
+
+## 🛠️ Technologies Used
+
+* **Frontend:**
+    * [Next.js](https://nextjs.org/)
+    * [React](https://reactjs.org/)
+    * [TypeScript](https://www.typescriptlang.org/)
+    * [Tailwind CSS](https://tailwindcss.com/)
+    * [Shadcn/UI](https://ui.shadcn.com/)
+    * `next-auth` (for authentication)
+    * `next/font` (for font optimization)
+* **Backend:**
+    * [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction) (for functionalities like NextAuth)
+    * [Prisma](https://www.prisma.io/) (ORM for database interaction)
+* **Database:**
+    * [PostgreSQL](https://www.postgresql.org/)
+* **Testing:**
+    * [Jest](https://jest.io/)
+    * [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+    * `@swc/jest` (for code transformation in tests)
+* **Other Tools:**
+    * ESLint (for code linting)
+    * Husky (for Git hooks)
+    * `cross-env` (for consistent environment variables across platforms)
+
+## 🚀 Getting Started
+
+Follow these instructions to run the project locally on your machine.
+
+### Prerequisites
+
+* [Node.js](https://nodejs.org/) (version 18.x or 20.x recommended, version 22.x used in Actions should also work)
+* [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+* A [PostgreSQL](https://www.postgresql.org/download/) instance running locally or accessible.
+
+### Local Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/anajuliaromera/unieats.git](https://github.com/anajuliaromera/unieats.git)
+    cd unieats
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3.  **Configure Environment Variables:**
+    * Create a file named `.env` in the project root.
+    * Copy the content from the `.env.example` file (if you create one) or add the following variables:
+
+        ```env
+        DATABASE_URL="postgresql://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:YOUR_PORT/YOUR_DATABASE_NAME"
+
+        NEXTAUTH_SECRET="YOUR_RANDOM_AND_SECURE_NEXTAUTH_SECRET"
+        NEXTAUTH_URL="http://localhost:3000" # For local development
+
+        # Add other variables your project might need (e.g., API keys for Google Auth)
+        # GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID"
+        # GOOGLE_CLIENT_SECRET="YOUR_GOOGLE_CLIENT_SECRET"
+        ```
+    * **Important:** Replace the placeholders with your actual values. `NEXTAUTH_SECRET` can be generated with `openssl rand -base64 32`.
+
+4.  **Run Prisma Migrations:**
+    This will create the tables in your database as defined in `prisma/schema.prisma`.
+    ```bash
+    npx prisma migrate dev
+    ```
+    Optionally, to populate the database with initial data (if you have a seed file):
+    ```bash
+    npx prisma db seed
+    ```
+
+5.  **Generate Prisma Client:**
+    (Normally, this is done automatically by the `prepare` script after `npm install`, but can be run manually if needed)
+    ```bash
+    npx prisma generate
+    ```
+
+### Running the Application
+
+1.  **Start the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+2.  **Run the production build:**
+    ```bash
+    npm run build
+    ```
+
+3.  **Start in production mode (after build):**
+    ```bash
+    npm run start
+    ```
+
+4.  **Run tests:**
+    ```bash
+    npm run test
+    ```
+
+5.  **Run lint:**
+    ```bash
+    npm run lint
+    ```
+
+6.  **Open Prisma Studio (to view/manage the database):**
+    ```bash
+    npx prisma studio
+    ```
+
+## 🔑 Environment Variables
+
+The following environment variables are necessary for the application to function correctly. Create a `.env` file in the project root and add them:
+
+* `DATABASE_URL`: Connection string for your PostgreSQL database.
+    * Format: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`
+* `NEXTAUTH_SECRET`: A secret and random string used by NextAuth.js to sign tokens, cookies, etc. Generate a strong one!
+* `NEXTAUTH_URL`: The canonical URL of your application. For local development, this is usually `http://localhost:3000`.
+* `GOOGLE_CLIENT_ID` (Optional): If you implemented Google login, add your Client ID.
+* `GOOGLE_CLIENT_SECRET` (Optional): If you implemented Google login, add your Client Secret.
+
+## 📜 Available Scripts
+
+In `package.json`, you'll find the following main scripts:
+
+* `npm run dev`: Starts the development server.
+* `npm run build`: Compiles the application for production.
+* `npm run start`: Starts the production server (after build).
+* `npm run lint`: Runs ESLint to check the code.
+* `npm run test`: Runs tests with Jest.
+* `npm run prepare`: Runs `husky && prisma generate` (usually after package installation).
+
+---

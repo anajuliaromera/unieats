@@ -1,12 +1,12 @@
 // __tests__/components/CategoryItem.test.tsx
-import React from 'react'; // PASSO 1: Importar React para React.ReactNode
+import React from 'react'; 
 import { render, screen } from '@testing-library/react';
-import CategoryItem from '../../app/_components/category-item'; // Ajuste o caminho se necessário
-import '@testing-library/jest-dom'; // Para matchers como toBeInTheDocument
+import CategoryItem from '../../app/_components/category-item'; 
+import '@testing-library/jest-dom'; 
 
-// PASSO 2: Corrigir o mock para next/link
+
 jest.mock('next/link', () => {
-  // Definir os tipos das props para o seu componente Link mockado
+ 
   type MockLinkProps = {
     children: React.ReactNode;
     href: string;
@@ -22,7 +22,7 @@ jest.mock('next/link', () => {
     return <a href={href} {...rest}>{children}</a>;
   };
 
-  MockedLinkComponent.displayName = 'MockedLink'; // Opcional: para melhor depuração
+  MockedLinkComponent.displayName = 'MockedLink'; 
 
   // Para módulos com default export (como o next/link), o factory do mock deve retornar um objeto assim:
   return {
@@ -35,7 +35,7 @@ jest.mock('next/link', () => {
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: any) => {
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  
     return <img {...props} />; // Removi o spread desnecessário e adicionei jsx-a11y/alt-text se o alt não vier nas props
   },
 }));

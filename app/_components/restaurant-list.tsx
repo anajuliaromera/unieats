@@ -1,45 +1,50 @@
 // app/_components/restaurant-list.tsx
-import { getServerSession } from "next-auth";
-import { authOptions } from "../_lib/auth"; // Ajuste o caminho se necessário
-import { db } from "../_lib/prisma";
+
 import RestaurantItem from "./restaurant-item";
-import { prismaDecimalParse } from "../_helpers/prisma";
-import { Restaurant, UserFavoriteRestaurant } from "@prisma/client";
+import { Restaurant, UserFavoriteRestaurant } from "@prisma/client"; 
+import React from 'react';
 
-// Removida a interface RestaurantListProps se props não for usado
 
-async function RestaurantList() {
-  // Removido 'props: RestaurantListProps'
-  const session = await getServerSession(authOptions);
+interface RestaurantListProps {
+  restaurants: Restaurant[]; 
+  userId?: string; 
+  userFavoritedRestaurants: UserFavoriteRestaurant[];
+  title?: string; 
+}
 
-  const restaurants: Restaurant[] = await db.restaurant.findMany({
-    orderBy: {
-      name: "asc", // Ou rating: "desc", ou createdAt: "asc" (se você adicionou o campo)
-    },
-    take: 10,
-    // Lembre-se de incluir quaisquer campos ou relações que RestaurantItem espera aqui
-    // ex: include: { categories: true }
-  });
-
-  const userFavoriteRestaurants: UserFavoriteRestaurant[] = session?.user?.id
-    ? await db.userFavoriteRestaurant.findMany({
-        where: {
-          userId: session.user.id,
-        },
-      })
-    : [];
+const RestaurantList: React.FC<RestaurantListProps> = ({
+  restaurants,
+  userId,
+  userFavoritedRestaurants,
+  title, 
+}) => {
+ 
+  if (!restaurants || restaurants.length === 0) {
+    return (
+      <div className="px-5 py-3">
+        {title && <h2 className="mb-2 text-lg font-semibold">{title}</h2>}
+        <p>Nenhum restaurante para exibir no momento.</p>
+      </div>
+    );
+    
+  }
 
   return (
-    <div className="flex gap-4 overflow-x-scroll px-5 pb-3 md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
-      {restaurants.map((restaurant) => (
-        <RestaurantItem
-          key={restaurant.id}
-          restaurant={prismaDecimalParse(restaurant)}
-          userId={session?.user?.id}
-          userFavoritedRestaurants={prismaDecimalParse(userFavoriteRestaurants)}
-          className="min-w-[150px] max-w-[150px] lg:min-w-[180px] lg:max-w-[180px]" // Largura ajustada no exemplo anterior
-        />
-      ))}
+    <div className="px-5 py-3 md:px-0"> {/* Ajustei o padding para consistência */}
+      {title && <h2 className="mb-3 text-lg font-semibold md:mb-4">{title}</h2>}
+      <div className="flex gap-4 overflow-x-scroll pb-3 md:pb-0 [&::-webkit-scrollbar]:hidden">
+        {/* Usa os 'restaurants' das props */}
+        {restaurants.map((restaurant) => (
+          <RestaurantItem
+            key={restaurant.id}
+            restaurant={restaurant} 
+            userId={userId} // Usa o 'userId' das props
+            // Mesmo para userFavoritedRestaurants: assumindo que já foi processado em page.tsx
+            userFavoritedRestaurants={userFavoritedRestaurants}
+            className="min-w-[150px] max-w-[150px] lg:min-w-[180px] lg:max-w-[180px]"
+          />
+        ))}
+      </div>
     </div>
   );
 }

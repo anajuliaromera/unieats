@@ -36,7 +36,7 @@ async function RestaurantList() {
           key={restaurant.id}
           restaurant={prismaDecimalParse(restaurant)}
           userId={session?.user?.id}
-          userFavoriteRestaurants={prismaDecimalParse(userFavoriteRestaurants)}
+          userFavoritedRestaurants={prismaDecimalParse(userFavoriteRestaurants)}
           className="min-w-[150px] max-w-[150px] lg:min-w-[180px] lg:max-w-[180px]" // Largura ajustada no exemplo anterior
         />
       ))}

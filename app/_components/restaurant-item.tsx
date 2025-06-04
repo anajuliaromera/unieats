@@ -1,7 +1,6 @@
-
 // app/_components/restaurant-item.tsx
 "use client";
-import { Restaurant, UserFavoriteRestaurant, Prisma} from "@prisma/client";
+import { Restaurant, UserFavoriteRestaurant, Prisma } from "@prisma/client";
 import {
   BikeIcon,
   HeartIcon,
@@ -10,21 +9,22 @@ import {
   StoreIcon,
   UserIcon,
   UtensilsCrossedIcon,
-  HomeIcon, // HomeIcon adicionado à importação
+  HomeIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { formatCurrency } from "../_helpers/price"; // Ajuste o caminho se necessário
-import { Button } from "@/components/ui/button"; // Caminho padrão ShadCN/UI
+import { formatCurrency } from "../_helpers/price";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { cn } from "../_lib/utils"; // Ajuste o caminho se necessário
-import useHandleFavoriteRestaurant from "../_hooks/use-favorite-restaurant"; // Ajuste o caminho se necessário
-import { isFavoriteRestaurant } from "../_helpers/restaurants"; // Ajuste o caminho se necessário
+import { cn } from "../_lib/utils";
+import useHandleFavoriteRestaurant from "../_hooks/use-favorite-restaurant";
+import { isFavoriteRestaurant } from "../_helpers/restaurants";
 import React from "react";
 
 interface ExtendedRestaurant extends Restaurant {
   type?: "Cantina" | "Aluno Vendedor" | "República" | "Food Bike" | string;
   specialty?: string;
   course?: string;
+  // rating já vem de Restaurant, que é Prisma.Decimal | null
 }
 
 interface RestaurantItemProps {
@@ -57,7 +57,7 @@ const RestaurantItem = ({
         return <StoreIcon size={13} className="mr-1.5 opacity-80" />;
       case "Aluno Vendedor":
         return <UserIcon size={13} className="mr-1.5 opacity-80" />;
-      case "República": // Assumindo que República usa HomeIcon
+      case "República":
         return <HomeIcon size={13} className="mr-1.5 opacity-80" />;
       case "Food Bike":
         return (
@@ -71,25 +71,26 @@ const RestaurantItem = ({
     }
   };
 
+  // IDs devem ser os IDs reais do seu banco de dados para que a lógica de merge funcione
   const vendedoresUniEats: { [key: string]: Partial<ExtendedRestaurant> } = {
-    ID_DO_SEU_RESTAURANTE_1: {
+    ID_DO_SEU_RESTAURANTE_1: { // Substitua pelo ID real
       name: "Cantina Central Uni",
       deliveryFee: new Prisma.Decimal(1.5),
       deliveryTimeMinutes: 20,
       type: "Cantina",
       specialty: "Pratos do dia e lanches rápidos",
-      rating: new Prisma.Decimal (4.5),
+      rating: new Prisma.Decimal(4.5),
     },
-    ID_DO_SEU_RESTAURANTE_2: {
+    ID_DO_SEU_RESTAURANTE_2: { // Substitua pelo ID real
       name: "Doces da Bia (ADM)",
       deliveryFee: new Prisma.Decimal(0),
       deliveryTimeMinutes: 15,
       type: "Aluno Vendedor",
       specialty: "Bolos caseiros e brigadeiros",
       course: "ADM",
-      rating: new Prisma.Decimal (4.8),
+      rating: new Prisma.Decimal(4.8),
     },
-    // ... (adicione os outros vendedores fictícios com IDs REAIS do seu DB)
+    // Adicione outros vendedores com seus IDs reais do banco de dados
   };
 
   const originalInfo = {
@@ -98,27 +99,38 @@ const RestaurantItem = ({
     imageUrl: restaurant.imageUrl,
     deliveryFee: restaurant.deliveryFee,
     deliveryTimeMinutes: restaurant.deliveryTimeMinutes,
-    rating: restaurant.rating,
+    rating: restaurant.rating, // Prisma.Decimal | null
     type: restaurant.type || "Vendedor",
     specialty: restaurant.specialty || "Variedades",
     course: restaurant.course || undefined,
   };
 
-  const vendedorDisplayInfo = vendedoresUniEats[restaurant.id]
-    ? { ...originalInfo, ...vendedoresUniEats[restaurant.id] }
+  const vendedorDataOverrides = vendedoresUniEats[restaurant.id];
+  const vendedorDisplayInfo = vendedorDataOverrides
+    ? { ...originalInfo, ...vendedorDataOverrides }
     : originalInfo;
 
-  if (typeof window !== "undefined") {
-    console.log(
-      `ID do Restaurante/Vendedor: ${restaurant.id} - Nome Original: ${restaurant.name} - Info Usada:`,
-      vendedorDisplayInfo,
-    );
-    if (!vendedoresUniEats[restaurant.id]) {
-      console.warn(
-        `ID ${restaurant.id} (Nome Original: ${restaurant.name}) não encontrado em vendedoresUniEats. Usando dados originais.`,
-      );
-    }
-  }
+  // Para depuração no cliente:
+  // if (typeof window !== "undefined") {
+  //   console.log(
+  //     `ID: ${restaurant.id} - Nome Original: ${restaurant.name} - Info Usada:`,
+  //     vendedorDisplayInfo,
+  //     `Rating Type: ${typeof vendedorDisplayInfo.rating}`,
+  //     `Rating Value: ${vendedorDisplayInfo.rating}`
+  //   );
+  //   if (!vendedorDataOverrides) {
+  //     console.warn(
+  //       `ID ${restaurant.id} (Nome: ${restaurant.name}) não encontrado em vendedoresUniEats. Usando dados originais.`,
+  //     );
+  //   }
+  // }
+
+  // Converte o rating para número para exibição
+  const ratingAsNumber =
+    vendedorDisplayInfo.rating !== null &&
+    vendedorDisplayInfo.rating !== undefined
+      ? Number(vendedorDisplayInfo.rating) // Converte Prisma.Decimal para number
+      : null;
 
   return (
     <div
@@ -151,15 +163,17 @@ const RestaurantItem = ({
           )}
         </Link>
 
-        {typeof vendedorDisplayInfo.rating === "number" && (
+        
+        {ratingAsNumber !== null && !isNaN(ratingAsNumber) && (
           <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-[hsl(var(--uni-accent-playful))] px-2 py-0.5 text-[0.6rem] font-bold text-[hsl(var(--foreground))] shadow-sm md:py-1 md:text-xs">
             <StarIcon
-              size={10}
-              className="fill-current text-current md:size-12"
+              size={10} // Ajuste o tamanho do ícone conforme necessário
+              className="fill-current text-current md:size-3" // Ajustado md:size-3 para ser proporcional
             />
-            <span>{vendedorDisplayInfo.rating.toFixed(1)}</span>
+            <span>{ratingAsNumber.toFixed(1)}</span>
           </div>
         )}
+        
 
         {userId && (
           <Button
@@ -176,9 +190,9 @@ const RestaurantItem = ({
             }}
           >
             <HeartIcon
-              size={14}
+              size={14} // Ajuste o tamanho do ícone conforme necessário
               className={cn(
-                "transition-colors md:size-16",
+                "transition-colors md:size-4", // Ajustado md:size-4
                 isFavorite
                   ? "fill-white text-white"
                   : "fill-current text-gray-500 group-hover:fill-[hsl(var(--primary))] group-hover:text-[hsl(var(--primary))]",
@@ -215,8 +229,7 @@ const RestaurantItem = ({
           <div className="flex items-center gap-1">
             <BikeIcon className="text-[hsl(var(--primary))]" size={12} />
             <span>
-              {Number(vendedorDisplayInfo.deliveryFee) === 0 ||
-              vendedorDisplayInfo.deliveryFee === "Grátis"
+              {Number(vendedorDisplayInfo.deliveryFee) === 0
                 ? "Entrega Grátis"
                 : formatCurrency(Number(vendedorDisplayInfo.deliveryFee))}
             </span>

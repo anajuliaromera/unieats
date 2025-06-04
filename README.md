@@ -15,11 +15,11 @@ Bem-vindo ao UniEats! Uma plataforma de delivery de comida desenvolvida para fac
 ## 🛠️ Tecnologias Utilizadas
 
 * **Frontend:**
-    * [Next.js](https://nextjs.org/) (App Router)
+    * [Next.js](https://nextjs.org/) 
     * [React](https://reactjs.org/)
     * [TypeScript](https://www.typescriptlang.org/)
-    * [Tailwind CSS](https://tailwindcss.com/) (provavelmente, para estilização)
-    * [Shadcn/UI](https://ui.shadcn.com/) (provavelmente, para componentes de UI)
+    * [Tailwind CSS](https://tailwindcss.com/) 
+    * [Shadcn/UI](https://ui.shadcn.com/) 
     * `next-auth` (para autenticação)
     * `next/font` (para otimização de fontes)
 * **Backend:**

@@ -4,15 +4,15 @@ import { render, screen } from "@testing-library/react";
 import CategoryList from "../../app/_components/category-list";
 import "@testing-library/jest-dom";
 
-// 1. DEFINA mockCategoriesData PRIMEIRO (Correto!)
+
 const mockCategoriesData = [
   { id: "1", name: "Pizzas Mock", imageUrl: "url1.png", products: [] },
   { id: "2", name: "Lanches Mock", imageUrl: "url2.png", products: [] },
 ];
 
-// --- Mocks ---
 
-// Mock para o CategoryItem - AJUSTADO AQUI
+
+
 jest.mock("../../app/_components/category-item", () => ({
   __esModule: true,
   // Definimos jest.fn() diretamente aqui para o default export
@@ -21,7 +21,7 @@ jest.mock("../../app/_components/category-item", () => ({
   )),
 }));
 
-// Mock para o módulo Prisma (db) - Mantém o ajuste anterior
+// Mock para o módulo Prisma (db)
 jest.mock("../../app/_lib/prisma", () => ({
   db: {
     category: {
@@ -66,7 +66,7 @@ describe("CategoryList Component (Server Component with Prisma)", () => {
     // Opcional: verificar se o CategoryItem mockado foi chamado com as props corretas
     expect(MockedCategoryItem).toHaveBeenCalledWith(
       expect.objectContaining({ category: mockCategoriesData[0] }),
-      expect.anything(), // O segundo argumento para componentes funcionais é o ref, que geralmente não testamos assim
+      expect.anything(), 
     );
     expect(MockedCategoryItem).toHaveBeenCalledWith(
       expect.objectContaining({ category: mockCategoriesData[1] }),

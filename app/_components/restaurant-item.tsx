@@ -1,6 +1,7 @@
+
 // app/_components/restaurant-item.tsx
 "use client";
-import { Restaurant, UserFavoriteRestaurant } from "@prisma/client";
+import { Restaurant, UserFavoriteRestaurant, Prisma} from "@prisma/client";
 import {
   BikeIcon,
   HeartIcon,
@@ -73,20 +74,20 @@ const RestaurantItem = ({
   const vendedoresUniEats: { [key: string]: Partial<ExtendedRestaurant> } = {
     ID_DO_SEU_RESTAURANTE_1: {
       name: "Cantina Central Uni",
-      deliveryFee: 1.5,
+      deliveryFee: new Prisma.Decimal(1.5),
       deliveryTimeMinutes: 20,
       type: "Cantina",
       specialty: "Pratos do dia e lanches rápidos",
-      rating: 4.5,
+      rating: new Prisma.Decimal (4.5),
     },
     ID_DO_SEU_RESTAURANTE_2: {
       name: "Doces da Bia (ADM)",
-      deliveryFee: 0,
+      deliveryFee: new Prisma.Decimal(0),
       deliveryTimeMinutes: 15,
       type: "Aluno Vendedor",
       specialty: "Bolos caseiros e brigadeiros",
       course: "ADM",
-      rating: 4.8,
+      rating: new Prisma.Decimal (4.8),
     },
     // ... (adicione os outros vendedores fictícios com IDs REAIS do seu DB)
   };

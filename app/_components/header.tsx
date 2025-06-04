@@ -35,16 +35,16 @@ export const Header = ({ haveSearchbar }: HeaderProps) => {
   const handleSignInClick = () => signIn();
 
   return (
-    <div className="flex items-center justify-between bg-white px-5 py-4 shadow-[var(--shadow-soft)] md:px-20 lg:px-32">
+    // A MODIFICAÇÃO ESTÁ AQUI: bg-[#FAFAFA] (um tom de off-white)
+    <div className="flex items-center justify-between bg-[#FAFAFA] px-5 py-4 shadow-[var(--shadow-soft)] md:px-20 lg:px-32">
       <Link href={"/"} className="inline-block">
         <Image
-          src="/uniets.jpeg" // Caminho para o logo na pasta public
+          src="/unieats.png" // Caminho para o logo na pasta public
           alt="UniEats Logo"
           width={140} // AJUSTE PARA A LARGURA IDEAL DO SEU LOGO
           height={48} // AJUSTE PARA A ALTURA IDEAL DO SEU LOGO (mantendo proporção)
           priority // Importante para LCP (Largest Contentful Paint)
-          className="h-auto" // Se width for fixo, height auto mantém proporção. Mas para Next/Image, width e height explícitos são melhores.
-          // Se a imagem original for, por exemplo, 280x96, você pode usar width={140} height={48}.
+          className="h-auto"
         />
       </Link>
 

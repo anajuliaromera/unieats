@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { Button } from "./ui/button"; // Seu componente Button da lib de UI
+import { Button } from "./ui/button"; 
 import {
   HeartIcon,
   HomeIcon,
@@ -18,11 +18,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet"; // Seus componentes Sheet da lib de UI
-import { Avatar, AvatarImage } from "./ui/avatar"; // Seus componentes Avatar da lib de UI
+  SheetDescription, 
+} from "./ui/sheet"; 
+import { Avatar, AvatarImage } from "./ui/avatar"; 
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Separator } from "./ui/separator"; // Seu componente Separator da lib de UI
-import Search from "./search"; // Seu componente Search
+import { Separator } from "./ui/separator"; 
+import Search from "./search";
 
 interface HeaderProps {
   haveSearchbar: boolean;
@@ -35,22 +36,20 @@ export const Header = ({ haveSearchbar }: HeaderProps) => {
   const handleSignInClick = () => signIn();
 
   return (
-    // A MODIFICAÇÃO ESTÁ AQUI: bg-[#FAFAFA] (um tom de off-white)
     <div className="flex items-center justify-between bg-[#FAFAFA] px-5 py-4 shadow-[var(--shadow-soft)] md:px-20 lg:px-32">
       <Link href={"/"} className="inline-block">
         <Image
-          src="/unieats.png" // Caminho para o logo na pasta public
+          src="/unieats.png"
           alt="UniEats Logo"
-          width={140} // AJUSTE PARA A LARGURA IDEAL DO SEU LOGO
-          height={48} // AJUSTE PARA A ALTURA IDEAL DO SEU LOGO (mantendo proporção)
-          priority // Importante para LCP (Largest Contentful Paint)
+          width={140}
+          height={48}
+          priority
           className="h-auto"
         />
       </Link>
 
       {haveSearchbar && (
         <div className="hidden w-2/5 md:block">
-          {/* O componente Search precisa ser estilizado internamente com o visual UniEats */}
           <Search />
         </div>
       )}
@@ -60,6 +59,7 @@ export const Header = ({ haveSearchbar }: HeaderProps) => {
           <Button
             variant={"ghost"}
             size={"icon"}
+            aria-label="Abrir menu" // aria-label já estava corretamente adicionado
             className="border-none text-[hsl(var(--foreground))] hover:bg-[hsl(var(--uni-orange-light))] hover:text-[hsl(var(--primary))]"
           >
             <MenuIcon />
@@ -70,6 +70,10 @@ export const Header = ({ haveSearchbar }: HeaderProps) => {
             <SheetTitle className="text-left text-xl font-bold text-[hsl(var(--foreground))]">
               Menu UniEats
             </SheetTitle>
+            {}
+            <SheetDescription className="sr-only">
+              Navegue pelas opções do menu, gerencie sua conta e seus pedidos.
+            </SheetDescription>
           </SheetHeader>
 
           {data?.user ? (
@@ -143,7 +147,7 @@ export const Header = ({ haveSearchbar }: HeaderProps) => {
                 Acesse seus pedidos, favoritos e aproveite o UniEats ao máximo.
               </p>
               <Button
-                className="mt-4 w-full rounded-[var(--radius-large)] bg-[hsl(var(--primary))] py-3 text-base text-[hsl(var(--primary-foreground))] hover:opacity-90" // Aumentei padding e font-size
+                className="mt-4 w-full rounded-[var(--radius-large)] bg-[hsl(var(--primary))] py-3 text-base text-[hsl(var(--primary-foreground))] hover:opacity-90"
                 onClick={handleSignInClick}
               >
                 <LogInIcon size={18} className="mr-2" />
